@@ -3,26 +3,20 @@ courses = []
 marks = {}
 
 def input_students():
-    num_students = int(input("Enter the number of students: "))
+    student_id = input("Enter student ID: ")
+    name = input("Enter student name: ")
+    dob = input("Enter student date of birth: ")
 
-    for _ in range(num_students):
-        student_id = input("Enter student ID: ")
-        name = input("Enter student name: ")
-        dob = input("Enter student date of birth: ")
-
-        student = (student_id, name, dob)
-        students.append(student)
+    student = (student_id, name, dob)
+    students.append(student)
 
 
 def input_courses():
-    num_courses = int(input("Enter the number of courses: "))
+    course_id = input("Enter course ID: ")
+    name = input("Enter course name: ")
 
-    for _ in range(num_courses):
-        course_id = input("Enter course ID: ")
-        name = input("Enter course name: ")
-
-        course = (course_id, name)
-        courses.append(course)
+    course = (course_id, name)
+    courses.append(course)
 
 
 def select_course():
@@ -30,22 +24,43 @@ def select_course():
     list_courses()
     course_id = input("Enter the course ID: ")
 
-    for student in students:
-        student_id = student[0]
-        marks[student_id] = {}
+    if course_id not in [course[0] for course in courses]:
+        print("Invalid course ID. Please try again.")
+        return
 
-        marks_for_course = float(input(f"Enter marks for student {student[1]} in course {course_id}: "))
+    print("Available students:")
+    list_students()
+    student_id = input("Enter the student ID: ")
+
+    if student_id not in [student[0] for student in students]:
+        print("Invalid student ID. Please try again.")
+        return
+
+    if course_id in marks.get(student_id, {}):
+        print(f"Student {students[student_id][1]} is already enrolled in course {course_id}.")
+    else:
+        marks_for_course = float(input(f"Enter marks for student {students[student_id][1]} in course {course_id}: "))
         marks[student_id][course_id] = marks_for_course
 
 
 def list_courses():
+    if len(courses) == 0:
+        print("No courses available.")
+        return
+
+    print("ID\tName")
     for course in courses:
-        print(f"ID: {course[0]}, Name: {course[1]}")
+        print(f"{course[0]}\t{course[1]}")
 
 
 def list_students():
+    if len(students) == 0:
+        print("No students available.")
+        return
+
+    print("ID\tName\tDoB")
     for student in students:
-        print(f"ID: {student[0]}, Name: {student[1]}, DoB: {student[2]}")
+        print(f"{student[0]}\t{student[1]}\t{student[2]}")
 
 
 def show_student_marks():
@@ -63,26 +78,30 @@ def show_student_marks():
 
 
 def main():
-    input_students()
-    input_courses()
 
     while True:
         print("\n===== MENU =====")
-        print("1. Select a course and input student marks")
-        print("2. List courses")
+        print("1. Input data for students")
+        print("2. Input courses")
         print("3. List students")
-        print("4. Show student marks for a given course")
+        print("4. List courses")
+        print("5. Choose course for students")
+        print("6. Show students mark")
         print("0. Exit")
 
         choice = input("Enter your choice: ")
 
         if choice == '1':
-            select_course()
+            input_students()
         elif choice == '2':
-            list_courses()
+            input_courses()
         elif choice == '3':
             list_students()
         elif choice == '4':
+            list_courses()
+        elif choice == '5':
+            select_course()
+        elif choice == '6':
             show_student_marks()
         elif choice == '0':
             break
